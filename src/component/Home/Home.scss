@@ -1,0 +1,12 @@
+.home-container {
+    height: 100vh;
+    background: #4a4a4a;
+    .player-status {
+        color: white;
+        font-size: 4vh;
+        font-weight: bold;
+        .player-side {
+            color: bisque;
+        }
+    }
+}

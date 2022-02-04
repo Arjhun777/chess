@@ -1,0 +1,31 @@
+.chess-board-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    .board-container {
+        border: 2px solid black;
+        .row-wrap {
+            display: flex;
+            flex-direction: row;
+            .column-wrap {
+                width: 80px;
+                height: 80px;
+                cursor: pointer;
+                box-sizing: border-box;
+                .piece-image {
+                    filter: drop-shadow(1px 1px 3px white) drop-shadow(-2px 1px 0 white) drop-shadow(1px -2px 0 white) drop-shadow(-1px -1px 0px white);
+                }
+            }
+            .selected-tile {
+                border: 2px solid red;
+            }
+            .WHITE {
+                background-color: white;
+            }
+            .BLACK {
+                background-color: black;
+            }
+        }
+    }
+}

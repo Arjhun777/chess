@@ -6,7 +6,7 @@ export const DEFAULT_POSITION = ['ROOK', 'KNIGHT', 'BISHOP', 'KING', 'QUEEN', 'B
 export const CHESS_PIECE_DESCRIPTION = {
     PAWN: {
         name: 'PAWN',
-        moment: ['VERTICAL', 'DIAGONAL'],
+        moment: ['VERTICAL'],
     },
     ROOK: {
         name: 'ROOK',

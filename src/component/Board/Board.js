@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { updateBoard, updatePlayer } from "../../redux/action/board";
 import { useSelector } from "react-redux";
-import { createBoard } from "../../utils/helper";
+import { createBoard, getPossiblePlacesToMove } from "../../utils/helper";
 import "./Board.scss";
 // import assets
 import blackPawn from "../../assets/images/dark_pawn.png";
@@ -38,6 +38,7 @@ const Board = () => {
     y: null,
 		side: null,
   });
+  const [availablePosition, setAvailablePosition] = useState([]);
   const { mainBoard, currentPlayer } = useSelector((state) => {
     return {
       mainBoard: state.board.mainBoard,
@@ -57,15 +58,18 @@ const Board = () => {
 	const checkIsCorrectPlayer = () => currentPlayer === selectedTile.side;
 
 	// x and y are new position to move the piece
-  const handleTileClick = (x, y, column) => {
-    if (checkIfNotSamePosition(x, y) && checkIfNotSameSide(x, y) && checkIfTileHasPiece() && checkIsCorrectPlayer()) {
+  const handleTileClick = (x, y, column, isHighlight = false) => {
+    if (isHighlight && checkIfNotSamePosition(x, y) && checkIfNotSameSide(x, y) && checkIfTileHasPiece() && checkIsCorrectPlayer()) {
       changePieceToNewPosition(x, y);
       removePieceFromCurrentPosition();
       updateBoard(mainBoard);
       setSelectedTile({ ...selectedTile, x: null, y: null, side: column.piece?.side });
 			changePlayer();
+      setAvailablePosition([]);
     } else {
-        setSelectedTile({ ...selectedTile, x, y, side: column.piece?.side });
+      const possible = getPossiblePlacesToMove(mainBoard, x, y, column);
+      setAvailablePosition(possible);
+      setSelectedTile({ ...selectedTile, x, y, side: column.piece?.side });
     }
   };
 
@@ -84,6 +88,14 @@ const Board = () => {
 		mainBoard[selectedTile.x][selectedTile.y].piece = null;
 	}
 
+  const isHighlighted = (rIndex, cIndex) => {
+    let isHighlight = false;
+    availablePosition?.forEach(position => {
+      if (rIndex === position.x && cIndex === position.y) isHighlight = true;
+    });
+    return isHighlight;
+  }
+
   return (
     <div className="chess-board-wrapper">
       <div className="board-container">
@@ -95,14 +107,15 @@ const Board = () => {
                 <div className="row-wrap">
                   {row.map((column, cIndex) => {
                     // Chess Each Tile
+                    const isHighlight = isHighlighted(rIndex, cIndex);
                     return (
                       <div
                         className={`column-wrap ${column.tile} ${
-                          rIndex === selectedTile.x && cIndex === selectedTile.y
-                            ? "selected-tile"
+                          (rIndex === selectedTile.x && cIndex === selectedTile.y) || 
+                          isHighlight ? "selected-tile"
                             : ""
                         }`}
-                        onClick={() => handleTileClick(rIndex, cIndex, column)}
+                        onClick={() => handleTileClick(rIndex, cIndex, column, isHighlight)}
                       >
                         {column?.piece ? (
                           <img
